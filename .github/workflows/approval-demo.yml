@@ -1,0 +1,25 @@
+# Demonstrates a deployment job gated by a GitHub environment approval.
+name: Deployment approval demo
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  prepare:
+    name: Prepare deployment
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Prepared commit $GITHUB_SHA for deployment"
+
+  deploy:
+    name: Deploy to production
+    needs: prepare
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Simulate deployment
+        run: |
+          echo "Approval received; deploying commit $GITHUB_SHA"
+          echo "## Production deployment approved" >> "$GITHUB_STEP_SUMMARY"
